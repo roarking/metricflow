@@ -16,6 +16,7 @@ on:
   pull_request:
     paths:
       - "sidecar/**"
+      - "pyproject.toml"
       - ".github/workflows/ci-sidecar-windows-nuitka-spike.yaml"
 
 jobs:
