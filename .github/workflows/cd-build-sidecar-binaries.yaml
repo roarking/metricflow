@@ -1,10 +1,5 @@
 # Compiles sidecar/mf_entry.py into standalone Nuitka binaries for every platform
 # Fusion needs to embed via rust-embed (DI-4631).
-#
-# The pull_request trigger is temporary validation scaffolding: workflow_dispatch
-# can't be invoked via API/CLI until this file exists on the default branch, so a
-# draft PR is the only way to exercise the full matrix on real runners before
-# merging. Remove it once this matrix is proven and DI-4631 is ready to merge.
 name: Build Sidecar Binaries
 
 on:
@@ -13,11 +8,6 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
   workflow_dispatch:
-  pull_request:
-    paths:
-      - "sidecar/**"
-      - "pyproject.toml"
-      - ".github/workflows/cd-build-sidecar-binaries.yaml"
 
 jobs:
   build:
