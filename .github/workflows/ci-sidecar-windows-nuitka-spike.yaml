@@ -4,10 +4,19 @@
 # repo or org. Run this manually via workflow_dispatch to validate the toolchain before
 # the full matrix workflow is added; delete this file once that workflow proves the
 # Windows leg works.
+#
+# The pull_request trigger exists only because workflow_dispatch cannot be invoked via
+# API/CLI until a workflow file exists on the default branch — it lets this spike run
+# on a draft PR before it's merged. Remove it along with this file once the real matrix
+# workflow supersedes it.
 name: "[Spike] Nuitka Windows Compile"
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "sidecar/**"
+      - ".github/workflows/ci-sidecar-windows-nuitka-spike.yaml"
 
 jobs:
   windows-nuitka-spike:
