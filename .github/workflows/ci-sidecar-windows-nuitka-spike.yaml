@@ -1,0 +1,43 @@
+# Manual-only spike to de-risk the Windows leg of the DI-4631 Nuitka build matrix before
+# committing to it in a full cross-platform workflow. Windows Nuitka compilation of
+# MetricFlow's dependency tree (pydantic-core, duckdb, etc.) has no track record in this
+# repo or org. Run this manually via workflow_dispatch to validate the toolchain before
+# the full matrix workflow is added; delete this file once that workflow proves the
+# Windows leg works.
+name: "[Spike] Nuitka Windows Compile"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-nuitka-spike:
+    name: Compile & Validate mf_entry (Windows x64)
+    runs-on: windows-latest
+    steps:
+      - name: Check-out the repo
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # actions/checkout@v4
+
+      - uses: ./.github/actions/setup-python-env
+        with:
+          hatch-environment-cache-config-json: >-
+            {
+              "configs": [
+                {"hatch_project_directory": ".", "hatch_environment_name": "nuitka-build"}
+              ]
+            }
+
+      - name: Compile mf_entry with Nuitka
+        shell: bash
+        run: hatch run nuitka-build:compile
+
+      - name: Validate compiled binary against Python interpreter
+        shell: bash
+        run: hatch run nuitka-build:validate
+
+      - name: Upload compiled artifact for inspection
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # actions/upload-artifact@v4
+        with:
+          name: mf_entry-windows-spike
+          path: sidecar/mf_entry.dist/
+          retention-days: 7
